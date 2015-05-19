@@ -133,3 +133,9 @@ coverage: test
 ###############################################################################
 ## build libraries, tests and documentaion
 all: libraries $(TEST_EXE)
+
+clean:
+	rm -rf build
+
+distclean: clean
+	rm -rf build
