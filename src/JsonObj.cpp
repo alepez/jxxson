@@ -1,6 +1,7 @@
 #include "JsonObj.h"
 
 #include <json-c/json.h>
+#include <stdexcept>
 
 namespace jsonxx {
 
@@ -49,12 +50,14 @@ JsonObj& JsonObj::operator=(const JsonObj& src) {
 JsonObj::JsonObj(JsonObj&& src) :
 		impl_ { src.impl_ },
 		type_ { src.type_ } {
-
+	json_object_get(getImpl(impl_));
 }
 
 JsonObj& JsonObj::operator=(JsonObj&& src) {
+	json_object_put(getImpl(impl_));
 	impl_ = src.impl_;
 	type_ = src.type_;
+	json_object_get(getImpl(impl_));
 	return *this;
 }
 
@@ -75,11 +78,47 @@ JsonObj::~JsonObj() {
 }
 
 JsonObj JsonObj::operator[](const std::string& key) const {
-	return JsonObj(json_object_object_get(getImpl(impl_), key.c_str()));
+	json_object* impl = nullptr;
+	if (!json_object_object_get_ex(getImpl(impl_), key.c_str(), &impl)) {
+		throw std::out_of_range("undefined key");
+	}
+	return JsonObj(impl);
 }
 
 JsonObj JsonObj::operator[](const size_t key) const {
-	return JsonObj(json_object_array_get_idx(getImpl(impl_), key));
+	auto impl = json_object_array_get_idx(getImpl(impl_), key);
+	if (!impl) {
+		throw std::out_of_range("undefined key");
+	}
+	return JsonObj(impl);
+}
+
+std::vector<JsonObj> JsonObj::toArray() const {
+	if (type_ != Type::array) {
+		throw std::runtime_error("not an array");
+	}
+	std::vector<JsonObj> result;
+	for (int i = 0;; ++i) {
+		json_object* impl = json_object_array_get_idx(getImpl(impl_), i);
+		if (!impl) {
+			break;
+		}
+		result.push_back(impl);
+	}
+	return result;
+}
+
+std::map<std::string, JsonObj> JsonObj::toHash() const {
+	std::map<std::string, JsonObj> result;
+	json_object_iterator it = json_object_iter_begin(getImpl(impl_));
+	json_object_iterator end = json_object_iter_end(getImpl(impl_));
+	while (!json_object_iter_equal(&it, &end)) {
+		const char* name = json_object_iter_peek_name(&it);
+		json_object* impl = json_object_iter_peek_value(&it);
+		result.insert(std::make_pair<std::string, JsonObj>(name, impl));
+		json_object_iter_next(&it);
+	}
+	return result;
 }
 
 template<>
@@ -100,6 +139,26 @@ std::string JsonObj::to<std::string>() const {
 template<>
 bool JsonObj::to<bool>() const {
 	return json_object_get_boolean(getImpl(impl_));
+}
+
+template<>
+std::vector<int> JsonObj::to<std::vector<int>>() const {
+	return this->coll<int>();
+}
+
+template<>
+std::vector<double> JsonObj::to<std::vector<double>>() const {
+	return this->coll<double>();
+}
+
+template<>
+std::vector<std::string> JsonObj::to<std::vector<std::string>>() const {
+	return this->coll<std::string>();
+}
+
+template<>
+std::vector<bool> JsonObj::to<std::vector<bool>>() const {
+	return this->coll<bool>();
 }
 
 }

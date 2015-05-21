@@ -2,6 +2,8 @@
 #define SRC_JSONOBJ_H_
 
 #include <string>
+#include <vector>
+#include <map>
 
 namespace jsonxx {
 
@@ -75,13 +77,26 @@ public:
 		return this->to<T>();
 	}
 
+	/** get a collection of T (if it is of type array) */
+	template<typename T>
+	std::vector<T> coll() const {
+		std::vector<T> result;
+		auto arr = this->toArray();
+		for (const auto& el: arr) {
+			result.push_back(el.to<T>());
+		}
+		return result;
+	}
+
 private:
 	JsonObj(void* impl);
+	std::vector<JsonObj> toArray() const;
+	std::map<std::string, JsonObj> toHash() const;
 	void* impl_;
 	Type type_;
 };
 
-/* Specializations for primitives */
+/* Specializations for primitives and string */
 
 template<>
 int JsonObj::to<int>() const;
@@ -94,6 +109,19 @@ std::string JsonObj::to<std::string>() const;
 
 template<>
 bool JsonObj::to<bool>() const;
+
+
+template<>
+std::vector<int> JsonObj::to<std::vector<int>>() const;
+
+template<>
+std::vector<double> JsonObj::to<std::vector<double>>() const;
+
+template<>
+std::vector<std::string> JsonObj::to<std::vector<std::string>>() const;
+
+template<>
+ std::vector<bool> JsonObj::to<std::vector<bool>>() const;
 
 }
 

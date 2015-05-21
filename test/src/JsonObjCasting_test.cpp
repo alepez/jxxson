@@ -9,6 +9,7 @@ struct Foo {
 	bool b;
 	int c;
 	double d;
+	std::vector<int> cc;
 };
 
 namespace jsonxx {
@@ -17,17 +18,18 @@ template<>
 Foo JsonObj::to<Foo>() const {
 	auto& j = *this;
 	return Foo {
-		j["a"], j["b"], j["c"], j["d"]
+		j["a"], j["b"], j["c"], j["d"], j["cc"]
 	};
 }
 
 }
 
 TEST(AJsonObj, CanBeCastedToACustomObject) {
-	JsonObj obj("{\"a\": \"ciao\",\"b\": true,\"c\": 42,\"d\": 3.14}");
+	JsonObj obj("{\"a\": \"ciao\",\"b\": true,\"c\": 42,\"d\": 3.14, \"cc\":[4,8,15,16,23,42]}");
 	Foo foo = obj;
 	ASSERT_EQ("ciao", foo.a);
 	ASSERT_EQ(true, foo.b);
 	ASSERT_EQ(42, foo.c);
 	ASSERT_EQ(3.14, foo.d);
+	ASSERT_EQ(23, foo.cc[4]);
 }
