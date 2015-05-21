@@ -3,7 +3,7 @@
 #include <json-c/json.h>
 #include <stdexcept>
 
-namespace jsonxx {
+namespace jxxson {
 
 namespace {
 

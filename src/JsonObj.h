@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-namespace jsonxx {
+namespace jxxson {
 
 class JsonObj {
 public:

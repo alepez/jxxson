@@ -2,7 +2,7 @@
 
 #include <JsonObj.h>
 
-using namespace jsonxx;
+using namespace jxxson;
 
 TEST(AJsonObj, CanBeLoadedByString) {
 	JsonObj obj("{\"foo\": 1}");

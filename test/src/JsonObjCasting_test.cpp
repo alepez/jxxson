@@ -2,7 +2,7 @@
 
 #include <JsonObj.h>
 
-using namespace jsonxx;
+using namespace jxxson;
 
 struct Foo {
 	std::string a;
@@ -12,7 +12,7 @@ struct Foo {
 	std::vector<int> cc;
 };
 
-namespace jsonxx {
+namespace jxxson {
 
 template<>
 Foo JsonObj::to<Foo>() const {
