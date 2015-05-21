@@ -79,14 +79,3 @@ TEST(AJsonObj, CanBeMoved) {
 	ASSERT_EQ("ciao", obj2["child"].to<std::string>());
 	ASSERT_TRUE(obj2["child"].isString());
 }
-
-TEST(AJsonObj, example) {
-	JsonObj obj{"ciao"};
-	std::string url = obj["items"][1]["url"];
-	JsonObj item1 = obj["items"][1];
-	int points = item1["points"];
-	auto sequence = item1["sequence"].coll<int>();
-	for (auto n: sequence) {
-		std::cout << n << "\n";
-	}
-}

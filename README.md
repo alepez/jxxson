@@ -56,7 +56,7 @@ for (auto n: sequence) {
 }
 ````
 
-If primitive types aren't enough, you can define bind custom types to a json structure:
+If primitive types aren't enough, you can bind custom types to json structures:
 
 ````cpp
 struct Item {
@@ -73,3 +73,15 @@ struct Item {
     std::vector<int> sequence;
 };
 ````
+
+## Development
+
+### Test
+
+You can test with:
+
+    make DEBUG=1 test
+
+You can test code coverage with:
+
+    make DEBUG=1 COVERAGE=1 coverage

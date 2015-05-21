@@ -39,27 +39,25 @@ LIBRARIES += json-c
 LIBRARY_DIRS += 
 
 ## COMPILER WARNINGS
-WARNINGS := -pedantic -Wall -Wextra -c -fmessage-length=0
+CXXFLAGS := -pedantic -Wall -Wextra -c -fmessage-length=0
 
 ## COMPILER FLAGS (DEBUG/RELEASE)
 ifeq ($(DEBUG), 1)
 	DEFINES += DEBUG
-	COMMON_FLAGS += -g3 -O0
+	CXXFLAGS += -g3 -O0
 else
 	DEFINES += NDEBUG
-	COMMON_FLAGS +=-O2
+	CXXFLAGS +=-O2
 endif
 
 ifeq ($(COVERAGE), 1)
-	COMMON_FLAGS += -p -pg --coverage
+	CXXFLAGS += -p -pg --coverage
 	LDFLAGS += --coverage
 endif
 
-COMMON_FLAGS += $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir))
-COMMON_FLAGS += $(foreach define,$(DEFINES),-D$(define))
-EXTRA_FLAGS += -fPIC -std=c++11
-
-CXXFLAGS = $(EXTRA_FLAGS) $(COMMON_FLAGS) $(WARNINGS)
+CXXFLAGS += $(foreach includedir,$(INCLUDE_DIRS),-I$(includedir))
+CXXFLAGS += $(foreach define,$(DEFINES),-D$(define))
+CXXFLAGS += -fPIC -std=c++11
 
 LDFLAGS += $(foreach librarydir,$(LIBRARY_DIRS),-L$(librarydir))
 LDFLAGS += $(foreach library,$(LIBRARIES),-l$(library))
@@ -125,8 +123,8 @@ test: $(TEST_EXE)
 	cd test/env && ../../$(TEST_EXE)
 
 coverage: test
-	lcov -b . --capture --directory . --output-file build/coverage.info
-	genhtml build/coverage.info --output-directory build/coverage
+	@lcov -b . --capture --directory . --output-file build/coverage.info
+	@genhtml build/coverage.info --output-directory build/coverage
 	@echo
 	@echo "open with browser: file://$(shell realpath build/coverage/index.html)"
 
