@@ -56,7 +56,7 @@ for (auto n: sequence) {
 }
 ````
 
-If primitive types aren't enough, you can define translator of custom types. In this example a custom type `Item` is bound to a json structure.
+If primitive types aren't enough, you can define bind custom types to a json structure:
 
 ````cpp
 struct Item {
