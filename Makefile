@@ -1,4 +1,4 @@
-PROJECT := jsonxx
+PROJECT := jxxson
 
 ## DIRECTORIES
 SRC_DIR := src
@@ -136,4 +136,4 @@ clean:
 	rm -rf build
 
 distclean: clean
-	rm -rf build
+	rm -rf dist
