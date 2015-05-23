@@ -2,7 +2,7 @@
 
 > A modern and elegant C++ interface to JSON data.
 
-## Examples
+## Usage
 
 ````json
 {
@@ -31,7 +31,7 @@ JsonObj obj{jsonString};
 Nested objects can be accessed with [] operator 
 
 ````cpp
-std::string url = obj["items"][1]["url"];
+std::string url { obj["items"][1]["url"] };
 ````
 
 You can create an alias to a nested object.
@@ -56,7 +56,7 @@ for (auto n: sequence) {
 }
 ````
 
-If primitive types aren't enough, you can bind custom types to json structures:
+If primitive types aren't enough, you can bind custom types to json structures.
 
 ````cpp
 struct Item {

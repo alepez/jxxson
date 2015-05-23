@@ -5,11 +5,11 @@
 using namespace jxxson;
 
 struct Foo {
-	std::string a;
-	bool b;
-	int c;
-	double d;
-	std::vector<int> cc;
+	const std::string a;
+	const bool b;
+	const int c;
+	const double d;
+	const std::vector<int> cc;
 };
 
 namespace jxxson {
@@ -18,15 +18,19 @@ template<>
 Foo JsonObj::to<Foo>() const {
 	auto& j = *this;
 	return Foo {
-		j["a"], j["b"], j["c"], j["d"], j["cc"]
+		j["a"].to<std::string>(),
+		j["b"].to<bool>(),
+		j["c"].to<int>(),
+		j["d"].to<double>(),
+		j["cc"].to<std::vector<int>>()
 	};
 }
 
 }
 
-TEST(AJsonObj, CanBeCastedToACustomObject) {
+TEST(AJsonObj, CanBeCastToCustomObjectBySpecialization) {
 	JsonObj obj("{\"a\": \"ciao\",\"b\": true,\"c\": 42,\"d\": 3.14, \"cc\":[4,8,15,16,23,42]}");
-	Foo foo = obj;
+	auto foo = obj.to<Foo>();
 	ASSERT_EQ("ciao", foo.a);
 	ASSERT_EQ(true, foo.b);
 	ASSERT_EQ(42, foo.c);

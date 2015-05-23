@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <type_traits>
 
 namespace jxxson {
 
@@ -76,23 +77,31 @@ public:
 	/** explicit cast to type T */
 	template<typename T>
 	T to() const {
-		T result;
-		translator(result, *this);
+		using TT = typename std::remove_const<T>::type;
+		TT result;
+		translate(result, *this);
 		return result;
 	}
 
-	/** implicit cast to type T */
+	/** automatic cast to type T */
 	template<typename T>
-	operator T() const {
+	explicit operator T() const {
 		return this->to<T>();
 	}
 
+//	/** automatic cast to type T */
+//	template<typename T>
+//	explicit operator const T() const {
+//		return this->to<T>();
+//	}
+
+
 private:
 	/** translator to json primitive types */
-	friend void translator(bool& dst, const JsonObj& src);
-	friend void translator(int& dst, const JsonObj& src);
-	friend void translator(double& dst, const JsonObj& src);
-	friend void translator(std::string& dst, const JsonObj& src);
+	friend void translate(bool& dst, const JsonObj& src);
+	friend void translate(int& dst, const JsonObj& src);
+	friend void translate(double& dst, const JsonObj& src);
+	friend void translate(std::string& dst, const JsonObj& src);
 
 	JsonObj(void* impl);
 	void* impl_;

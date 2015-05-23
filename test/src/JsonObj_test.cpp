@@ -22,9 +22,6 @@ TEST(AJsonObj, CanReadBooleanChild) {
 TEST(AJsonObj, CanReadIntegerNumberChild) {
 	JsonObj obj("{\"child\": 42}");;
 	ASSERT_EQ(42, obj["child"].to<int>());
-	ASSERT_EQ(42, static_cast<int>(obj["child"]));
-	int child = obj["child"];
-	ASSERT_EQ(42, child);
 	ASSERT_TRUE(obj["child"].isNumber());
 }
 
