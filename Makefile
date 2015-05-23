@@ -120,12 +120,16 @@ $(TEST_EXE): $(TEST_OBJS) $(CXX_OBJS)
 	$(CXX) -o $@ $(CXX_OBJS) $(TEST_OBJS) -lgtest -lgtest_main -lpthread $(LDFLAGS)
 
 test: $(TEST_EXE)
-	cd test/env && ../../$(TEST_EXE)
+	./test/scripts/all
+
+memcheck: $(TEST_EXE)
+	./test/scripts/all_memcheck
 
 coverage: test
 	@lcov -b . --capture --directory . --output-file build/coverage.info
 	@genhtml build/coverage.info --output-directory build/coverage
 	@echo
+	@sleep 1
 	@echo "open with browser: file://$(shell realpath build/coverage/index.html)"
 
 ###############################################################################
