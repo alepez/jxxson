@@ -28,51 +28,47 @@ If jsonString is a string containing the json data above
 JsonObj obj{jsonString};
 ````
 
-Nested objects can be accessed with [] operator 
+You can access nested objects with subscript operator:
+
+````cpp
+auto items = obj["items"];
+````
+
+You can access deeper object with multiple nested operators:
+
+````cpp
+auto url0 = obj["items"][0]["url"];
+````
+
+### Conversion
+
+An object can be converted to any of: bool, int, double, std::string. It's done by JsonObj::to<T>() template function.
+
+````cpp
+auto url = obj["items"][1]["url"].to<std::string>();
+````
+
+But you can use a more familiar `static_cast`:
+
+````cpp
+auto url = static_cast<std::string>(obj["items"][1]["url"]);
+````
+
+And you can also save some typing with explicit initialization:
 
 ````cpp
 std::string url { obj["items"][1]["url"] };
 ````
 
-You can create an alias to a nested object.
+Only universal initialization works, the old one with `=` doesn't work. Implicit convertion operator is disabled, cause it can be armful.
 
 ````cpp
-JsonObj item1 = obj["items"][1];
-````
-
-Objects are implicitly cast to primitive types.
-
-````cpp
-double points = item1["points"];
-````
-
-You can also get a collection (a std::vector of any primitive type) from a json array.
-
-````cpp
-auto sequence = item1["sequence"].coll<int>();
-
-for (auto n: sequence) {
-    std::cout << n << "\n";
-}
+std::string url = obj["items"][1]["url"]; // THIS DOES NOT WORK!!!
 ````
 
 If primitive types aren't enough, you can bind custom types to json structures.
 
-````cpp
-struct Item {
-    Item(const JsonObj& j) :
-            name { j["name"] },
-            url { j["url"] },
-            points { j["points"] },
-            sequence { j["sequence"] } {
 
-    }
-    std::string name;
-    bool url;
-    double points;
-    std::vector<int> sequence;
-};
-````
 
 ## Development
 
