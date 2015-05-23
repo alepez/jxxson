@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <JsonObj.h>
+#include <jxxson.h>
 
 using namespace jxxson;
 

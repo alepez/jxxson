@@ -121,44 +121,4 @@ std::map<std::string, JsonObj> JsonObj::toHash() const {
 	return result;
 }
 
-template<>
-int JsonObj::to<int>() const {
-	return json_object_get_int64(getImpl(impl_));
-}
-
-template<>
-double JsonObj::to<double>() const {
-	return json_object_get_double(getImpl(impl_));
-}
-
-template<>
-std::string JsonObj::to<std::string>() const {
-	return json_object_get_string(getImpl(impl_));
-}
-
-template<>
-bool JsonObj::to<bool>() const {
-	return json_object_get_boolean(getImpl(impl_));
-}
-
-template<>
-std::vector<int> JsonObj::to<std::vector<int>>() const {
-	return this->coll<int>();
-}
-
-template<>
-std::vector<double> JsonObj::to<std::vector<double>>() const {
-	return this->coll<double>();
-}
-
-template<>
-std::vector<std::string> JsonObj::to<std::vector<std::string>>() const {
-	return this->coll<std::string>();
-}
-
-template<>
-std::vector<bool> JsonObj::to<std::vector<bool>>() const {
-	return this->coll<bool>();
-}
-
 }

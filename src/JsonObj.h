@@ -37,6 +37,12 @@ public:
 	/** access a child by index (if it is of type array) */
 	JsonObj operator[](const size_t) const;
 
+	/** map all children to a hash (if it is of type array) */
+	std::map<std::string, JsonObj> toHash() const;
+
+	/** map all children to a vector (if it is of type array) */
+	std::vector<JsonObj> toArray() const;
+
 	/** return true it is null */
 	bool isNull() const {
 		return type_ == Type::null;
@@ -69,7 +75,11 @@ public:
 
 	/** explicit cast to type T */
 	template<typename T>
-	T to() const;
+	T to() const {
+		T result;
+		translator(result, *this);
+		return result;
+	}
 
 	/** implicit cast to type T */
 	template<typename T>
@@ -77,51 +87,17 @@ public:
 		return this->to<T>();
 	}
 
-	/** get a collection of T (if it is of type array) */
-	template<typename T>
-	std::vector<T> coll() const {
-		std::vector<T> result;
-		auto arr = this->toArray();
-		for (const auto& el: arr) {
-			result.push_back(el.to<T>());
-		}
-		return result;
-	}
-
 private:
+	/** translator to json primitive types */
+	friend void translator(bool& dst, const JsonObj& src);
+	friend void translator(int& dst, const JsonObj& src);
+	friend void translator(double& dst, const JsonObj& src);
+	friend void translator(std::string& dst, const JsonObj& src);
+
 	JsonObj(void* impl);
-	std::vector<JsonObj> toArray() const;
-	std::map<std::string, JsonObj> toHash() const;
 	void* impl_;
 	Type type_;
 };
-
-/* Specializations for primitives and string */
-
-template<>
-int JsonObj::to<int>() const;
-
-template<>
-double JsonObj::to<double>() const;
-
-template<>
-std::string JsonObj::to<std::string>() const;
-
-template<>
-bool JsonObj::to<bool>() const;
-
-
-template<>
-std::vector<int> JsonObj::to<std::vector<int>>() const;
-
-template<>
-std::vector<double> JsonObj::to<std::vector<double>>() const;
-
-template<>
-std::vector<std::string> JsonObj::to<std::vector<std::string>>() const;
-
-template<>
- std::vector<bool> JsonObj::to<std::vector<bool>>() const;
 
 }
 
