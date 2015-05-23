@@ -8,45 +8,64 @@ TEST(AJsonObj, CanBeLoadedByString) {
 	JsonObj obj("{\"foo\": 1}");
 }
 
-TEST(AJsonObj, CanReadNullChild) {
+TEST(AJsonObj, CanBeNull) {
 	JsonObj obj("{\"child\": null}");
 	ASSERT_TRUE(obj["child"].isNull());
 }
 
-TEST(AJsonObj, CanReadBooleanChild) {
+TEST(AJsonObj, CanBeBoolean) {
 	JsonObj obj("{\"child\": true}");;
-	ASSERT_EQ(true, obj["child"].to<bool>());
 	ASSERT_TRUE(obj["child"].isBoolean());
 }
 
-TEST(AJsonObj, CanReadIntegerNumberChild) {
+TEST(AJsonObj, CanBeNumber) {
 	JsonObj obj("{\"child\": 42}");;
-	ASSERT_EQ(42, obj["child"].to<int>());
 	ASSERT_TRUE(obj["child"].isNumber());
 }
 
-TEST(AJsonObj, CanReadFloatingNumberChild) {
-	JsonObj obj("{\"child\": 1.234}");;
-	ASSERT_EQ(1.234, obj["child"].to<double>());
-	ASSERT_TRUE(obj["child"].isNumber());
-}
-
-TEST(AJsonObj, CanReadObjectChild) {
+TEST(AJsonObj, CanBeObject) {
 	JsonObj obj("{\"child\":{\"foo\":42}}");;
-	ASSERT_EQ(42, obj["child"]["foo"].to<int>());
 	ASSERT_TRUE(obj["child"].isObject());
 }
 
-TEST(AJsonObj, CanReadArrayChild) {
+TEST(AJsonObj, CanBeArray) {
 	JsonObj obj("{\"child\":[4,8,15,16,23,42]}");;
-	ASSERT_EQ(23, obj["child"][4].to<int>());
 	ASSERT_TRUE(obj["child"].isArray());
 }
 
-TEST(AJsonObj, CanReadStringChild) {
+TEST(AJsonObj, CanBeString) {
 	JsonObj obj("{\"child\": \"ciao\"}");;
-	ASSERT_EQ("ciao", obj["child"].to<std::string>());
 	ASSERT_TRUE(obj["child"].isString());
+}
+
+TEST(AJsonObj, CanBeConvertedToArray) {
+	JsonObj obj("[1,2,3,4,5]");
+	auto arr = obj.toArray();
+	ASSERT_EQ(1, arr[0].to<int>());
+	ASSERT_EQ(2, arr[1].to<int>());
+	ASSERT_EQ(3, arr[2].to<int>());
+	std::string keys = "";
+	int values = 0;
+	for (const auto& j: arr) {
+		values += j.to<int>();
+	}
+	ASSERT_EQ(15, values);
+}
+
+TEST(AJsonObj, CanBeConvertedToHash) {
+	JsonObj obj("{\"a\": 1, \"b\": 2, \"c\": 3}");
+	auto hash = obj.toHash();
+	ASSERT_EQ(1, hash.at("a").to<int>());
+	ASSERT_EQ(2, hash.at("b").to<int>());
+	ASSERT_EQ(3, hash.at("c").to<int>());
+	std::string keys = "";
+	int values = 0;
+	for (const auto& it: hash) {
+		keys+= it.first;
+		values += it.second.to<int>();
+	}
+	ASSERT_EQ(6, values);
+	ASSERT_EQ("abc", keys);
 }
 
 TEST(AJsonObj, CanBeCopyConstructed) {
@@ -68,8 +87,19 @@ TEST(AJsonObj, CanBeCopied) {
 	ASSERT_TRUE(obj["child"].isString());
 }
 
-TEST(AJsonObj, CanBeMoved) {
+TEST(AJsonObj, CanBeCopyMoved) {
 	JsonObj obj2 = []{
+		JsonObj obj("{\"child\": \"ciao\"}");;
+		return obj;
+	}();
+	ASSERT_EQ("ciao", obj2["child"].to<std::string>());
+	ASSERT_TRUE(obj2["child"].isString());
+}
+
+
+TEST(AJsonObj, CanBeMoved) {
+	JsonObj obj2("{}");
+	obj2 = []{
 		JsonObj obj("{\"child\": \"ciao\"}");;
 		return obj;
 	}();

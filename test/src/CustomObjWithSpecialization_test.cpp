@@ -4,7 +4,7 @@
 
 using namespace jxxson;
 
-struct Foo {
+struct Foo2 {
 	const std::string a;
 	const bool b;
 	const int c;
@@ -15,9 +15,9 @@ struct Foo {
 namespace jxxson {
 
 template<>
-Foo JsonObj::to<Foo>() const {
+Foo2 JsonObj::to<Foo2>() const {
 	auto& j = *this;
-	return Foo {
+	return Foo2 {
 		j["a"].to<std::string>(),
 		j["b"].to<bool>(),
 		j["c"].to<int>(),
@@ -30,7 +30,7 @@ Foo JsonObj::to<Foo>() const {
 
 TEST(AJsonObj, CanBeCastToCustomObjectBySpecialization) {
 	JsonObj obj("{\"a\": \"ciao\",\"b\": true,\"c\": 42,\"d\": 3.14, \"cc\":[4,8,15,16,23,42]}");
-	auto foo = obj.to<Foo>();
+	auto foo = obj.to<Foo2>();
 	ASSERT_EQ("ciao", foo.a);
 	ASSERT_EQ(true, foo.b);
 	ASSERT_EQ(42, foo.c);

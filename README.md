@@ -22,7 +22,7 @@
 }
 ````
 
-If `jsonString` is a string containing the json data above
+Given `jsonString`, a string containing the json data above
 
 ````cpp
 JsonObj obj{jsonString};
@@ -141,13 +141,12 @@ void translate(CustomType& dst, const JsonObj& j) {
 
 You can test with:
 
-    make DEBUG=1 test
-
-You can test code coverage with:
-
-    make DEBUG=1 COVERAGE=1 coverage
+    make test
 
 You can memcheck with:
 
     make memcheck
 
+You can test code coverage with:
+
+    make DEBUG=1 COVERAGE=1 coverage
