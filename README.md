@@ -60,7 +60,7 @@ And you can also save some typing with explicit initialization:
 std::string url { obj["items"][1]["url"] };
 ````
 
-Only universal initialization works, the old one with `=` doesn't work. Implicit convertion operator is disabled, cause it can be armful.
+Only universal initialization works, the assignment operator `=` doesn't work. Implicit convertion is disabled, cause it can be harmful.
 
 ````cpp
 std::string url = obj["items"][1]["url"]; // THIS DOES NOT WORK!!!
